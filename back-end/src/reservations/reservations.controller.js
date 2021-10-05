@@ -118,12 +118,18 @@ async function create(req, res) {
 }
 
 async function reservationExists(req, res, next) {
-  const reservation = await reservationsService.read(req.params.reservationId);
+  const { reservationId } = req.params
+  const reservation = await reservationsService.read(reservationId);
   if (reservation) {
     res.locals.reservation = reservation;
     return next();
   }
-  next({ status: 404, message: `reservation cannot be found.` });
+  next({ status: 404, message: `Reservation ID ${reservationId} cannot be found.` });
+}
+
+function read(req, res) {
+  const { reservation: data } = res.locals;
+  res.json({ data });
 }
 
 async function update(req, res) {
@@ -142,14 +148,16 @@ async function destroy(req, res) {
 }
 
 /**
- * List handler for reservation resources specific to date query
+ * List handler for reservation resources with optional date or mobile_number query
  */
 async function list(req, res) {
-  const { date } = req.query;
+  const { date, mobile_number } = req.query;
   let data = [];
 
   if (date) {
     data = await reservationsService.listByDate(date);
+  } else if (mobile_number) {
+    data = await reservationsService.listByMobileNumber(mobile_number);
   } else {
     data = await reservationsService.list();
   }
@@ -167,6 +175,7 @@ module.exports = {
     hasValidInputs,
     asyncErrorBoundary(create),
   ],
+  read: [asyncErrorBoundary(reservationExists), read],
   update: [
     asyncErrorBoundary(reservationExists),
     hasOnlyValidProperties,
