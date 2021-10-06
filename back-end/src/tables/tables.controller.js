@@ -4,10 +4,10 @@
 // The tests do not check the body returned by this request. - The server should return 400 if the table is not occupied.
 const tablesService = require("./tables.service");
 const hasProperties = require("../errors/hasProperties");
-const hasRequiredProperties = hasProperties("table_name", "capacity");
+// const hasRequiredProperties = hasProperties("table_name", "capacity", "reservation_id");
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 
-const VALID_PROPERTIES = ["table_name", "capacity"];
+const VALID_PROPERTIES = ["table_name", "capacity", "reservation_id"];
 /**
  * Validates the request properties
  * @param req
@@ -37,10 +37,6 @@ function hasValidInputs(req, res, next) {
 
   if (table_name.length < 2) {
     invalidInputs = invalidInputs.concat(" table_name");
-    // return next({
-    //   status: 400,
-    //   message: `"table_name" must have more than two characters.`,
-    // });
   }
   
   if (typeof capacity !== "number"){
@@ -72,13 +68,56 @@ async function list(req, res, next) {
 }
 
 async function tableExists(req, res, next) {
-  const table = await tablesService.read(req.params.tableId);
+  const { table_id } = req.params
+  const table = await tablesService.read(table_id);
   if (table) {
     res.locals.table = table;
-    next();
+    return next();
   }
+
+  next({
+    status: 404,
+    message: `Table ID ${table_id} does not exist.`,
+  });
 }
 
+async function reservationIdExists(req, res, next) {
+  const { reservation_id } = req.body.data;
+  const reservation = await tablesService.readReservation(reservation_id)
+  if (reservation) {
+    res.locals.reservation = reservation
+    return next()
+  }
+  
+  next({
+    status: 404,
+    message: `Reservation ID ${reservation_id} does not exist.`,
+  });
+}
+
+// checks if the table capacity can seat the number of people on the reservation
+function tableHasSufficientCapacity(req, res, next) {
+  const { people } = res.locals.reservation
+  const { capacity } = res.locals.table
+
+  if (capacity >= people) return next()
+
+  next({
+    status: 400,
+    message: `Table does not have sufficient capacity.`,
+  });
+}
+
+function tableIsNotOccupied(req, res, next) {
+  const { reservation_id } = res.locals.table
+
+  if (reservation_id == null) return next()
+
+  next({
+    status: 400,
+    message: `Table is occupied.`,
+  });
+}
 
 async function update(req, res) {
     const updatedTable = {
@@ -97,9 +136,18 @@ async function read(req, res) {
 module.exports = {
   create: [
     hasOnlyValidProperties,
-    hasRequiredProperties,
+    hasProperties("table_name", "capacity"),
     hasValidInputs,
     asyncErrorBoundary(create),
+  ],
+  update: [
+    asyncErrorBoundary(tableExists),
+    hasOnlyValidProperties,
+    hasProperties("reservation_id"),
+    asyncErrorBoundary(reservationIdExists),
+    tableHasSufficientCapacity,
+    tableIsNotOccupied,
+    asyncErrorBoundary(update),
   ],
   list: [asyncErrorBoundary(list)],
   read: [asyncErrorBoundary(tableExists), asyncErrorBoundary(read)],

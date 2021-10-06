@@ -11,12 +11,26 @@ function list() {
   return knex("tables").select("*").orderBy("table_name");
 }
 
-// function read(tableId) {
-//   return knex("tables").select("*").where({ table_id: tableId }).first();
-// }
+function read(table_id) {
+  return knex("tables").select("*").where({ table_id }).first();
+}
+
+function readReservation(reservation_id) {
+  return knex("reservations").select("*").where({ reservation_id }).first();
+}
+
+function update(updatedTable) {
+return knex("tables")
+  .select("*")
+  .where({ table_id: updatedTable.table_id })
+  .update(updatedTable, "*")
+  .then((updatedRecords) => updatedRecords[0])
+}
 
 module.exports = {
   create,
   list,
-//   read,
+  read,
+  readReservation,
+  update
 };
