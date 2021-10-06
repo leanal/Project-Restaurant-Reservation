@@ -78,10 +78,17 @@ function hasValidInputs(req, res, next) {
     });
   }
 
-  if (!reservationDateIsInTheFuture(reservation_date)) {
+  if (reservationNotInTheFuture(reservation_date, reservation_time)) {
     return next({
       status: 400,
       message: `Please enter a future reservation date.`,
+    });
+  }
+
+  if (reservationTimeNotAllowed(reservation_time)) {
+    return next({
+      status: 400,
+      message: `Please enter a time between 10:30 to 21:30.`,
     });
   }
   return next();
@@ -92,39 +99,52 @@ function reservationDateIsValid(reservation_date) {
   const timestamp = Date.parse(reservation_date);
   if (isNaN(timestamp) == false) {
     const date = new Date(timestamp);
-    return date instanceof Date ? true : false;
+    return date instanceof Date
   }
 }
 
 function reservationTimeIsValid(reservation_time) {
   const isTime = reservation_time.match(/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/);
-  return isTime ? true : false;
+  return isTime
 }
 
 // checks if the reservation_date is a Tuesday
 function reservationDateIsTuesday(reservation_date) {
   const timestamp = Date.parse(`${reservation_date} PST`);
   const date = new Date(timestamp);
-  return date.getDay() == 2 ? true : false;
+  return date.getDay() == 2
 }
 
-function reservationDateIsInTheFuture(reservation_date) {
-  const reservationDateTimestamp = Date.parse(`${reservation_date} PST`);
-  return reservationDateTimestamp > Date.now()
+// checks if the reservation is after the current time and date
+function reservationNotInTheFuture(reservation_date, reservation_time) {
+  const reservationDateTimestamp = Date.parse(
+    `${reservation_date} ${reservation_time} PST`
+  );
+  return reservationDateTimestamp < Date.now();
 }
+
+// checks if the reservation time is NOT between 10:30 and 21:30
+function reservationTimeNotAllowed(reservation_time) {
+  const reservationTime = Number(reservation_time.replace(":", "").slice(0, 4));
+  return reservationTime < 1030 || reservationTime > 2130
+}
+
 async function create(req, res) {
   const data = await reservationsService.create(req.body.data);
   res.status(201).json({ data });
 }
 
 async function reservationExists(req, res, next) {
-  const { reservationId } = req.params
+  const { reservationId } = req.params;
   const reservation = await reservationsService.read(reservationId);
   if (reservation) {
     res.locals.reservation = reservation;
     return next();
   }
-  next({ status: 404, message: `Reservation ID ${reservationId} cannot be found.` });
+  next({
+    status: 404,
+    message: `Reservation ID ${reservationId} cannot be found.`,
+  });
 }
 
 function read(req, res) {
