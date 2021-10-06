@@ -19,12 +19,15 @@ const hasRequiredProperties = hasProperties(
 //PUT to /reservations/:reservation_id/status with a body of {data: { status: "<new-status>" } } where <new-status> is one of booked, seated, or finished
 
 const VALID_PROPERTIES = [
+  "reservation_id",
   "first_name",
   "last_name",
   "mobile_number",
   "reservation_date",
   "reservation_time",
   "people",
+  "created_at",
+  "updated_at"
 ];
 
 function hasOnlyValidProperties(req, res, next) {
@@ -105,6 +108,7 @@ function reservationDateIsValid(reservation_date) {
 
 function reservationTimeIsValid(reservation_time) {
   const isTime = reservation_time.match(/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/);
+  console.log(reservation_time, isTime);
   return isTime
 }
 
@@ -200,6 +204,7 @@ module.exports = {
     asyncErrorBoundary(reservationExists),
     hasOnlyValidProperties,
     hasRequiredProperties,
+    hasValidInputs,
     asyncErrorBoundary(update),
   ],
   delete: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(destroy)],
