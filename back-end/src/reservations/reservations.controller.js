@@ -133,9 +133,12 @@ function reservationTimeNotAllowed(reservation_time) {
   return reservationTime < 1030 || reservationTime > 2130
 }
 
+// creates a new reservation adding 'status' key with default value "booked"
 async function create(req, res) {
-  const data = await reservationsService.create(req.body.data);
-  res.status(201).json({ data });
+  const { data } = req.body
+  const newReservation = { ...data, status: "booked" }
+  const newData = await reservationsService.create(newReservation);
+  res.status(201).json({ data: newData });
 }
 
 async function reservationExists(req, res, next) {
