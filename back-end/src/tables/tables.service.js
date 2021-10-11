@@ -27,10 +27,28 @@ return knex("tables")
   .then((updatedRecords) => updatedRecords[0])
 }
 
+function updateReservation(updatedReservation) {
+  return knex("reservations")
+    .select("*")
+    .where({ reservation_id: updatedReservation.reservation_id })
+    .update(updatedReservation, "*")
+    .then((updatedRecords) => updatedRecords[0]);
+}
+
+function deleteReservationId(updatedTable) {
+  return knex("tables")
+    .select("*")
+    .where({ table_id: updatedTable.table_id })
+    .update(updatedTable, "*")
+    .then((updatedRecords) => updatedRecords[0])
+  }
+
 module.exports = {
   create,
   list,
   read,
   readReservation,
-  update
+  update,
+  updateReservation,
+  deleteReservationId
 };
