@@ -11,13 +11,6 @@ const hasRequiredProperties = hasProperties(
   "people"
 );
 
-// 400! The reservation date is in the past. Only future reservations are allowed. time & date
-// Hint Parsing a Date that includes the time in JavaScript can be tricky. Again, keep an eye out for which time zone is being used for your Dates.
-// { status: 404, message: `The reservation time cannot be before 10:30 AM.` }
-// { status: 400, message: `The reservation time is after 9:30 PM. Restaurant closes at 10:30 PM` }
-// { status: 400, message: `` }
-//PUT to /reservations/:reservation_id/status with a body of {data: { status: "<new-status>" } } where <new-status> is one of booked, seated, or finished
-
 const VALID_PROPERTIES = [
   "reservation_id",
   "first_name",
@@ -26,8 +19,9 @@ const VALID_PROPERTIES = [
   "reservation_date",
   "reservation_time",
   "people",
+  "status",
   "created_at",
-  "updated_at"
+  "updated_at",
 ];
 
 function hasOnlyValidProperties(req, res, next) {
@@ -46,11 +40,25 @@ function hasOnlyValidProperties(req, res, next) {
   next();
 }
 
+// if 'status' property is present, validates that it is equal to "booked"
+function statusIsBooked(req, res, next) {
+  const { status } = req.body.data;
+
+  if (!status) return next();
+
+  if (status === "booked") return next();
+  next({
+    status: 400,
+    message: `The reservation status is ${status}.`,
+  });
+}
+
 /**
- * Validates input for people,
- * @param { body.data } req
- * @param {*} next
- * @returns property names of the invalid inputs
+ * Validates input for people, reservation_date and reservation_time
+ * @param req
+ * @param next
+ * @returns {Error}
+ * a status code and a message with all the fields with invalid input
  */
 function hasValidInputs(req, res, next) {
   const { people, reservation_date, reservation_time } = req.body.data;
@@ -102,21 +110,20 @@ function reservationDateIsValid(reservation_date) {
   const timestamp = Date.parse(reservation_date);
   if (isNaN(timestamp) == false) {
     const date = new Date(timestamp);
-    return date instanceof Date
+    return date instanceof Date;
   }
 }
 
 function reservationTimeIsValid(reservation_time) {
   const isTime = reservation_time.match(/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/);
-  console.log(reservation_time, isTime);
-  return isTime
+  return isTime;
 }
 
 // checks if the reservation_date is a Tuesday
 function reservationDateIsTuesday(reservation_date) {
   const timestamp = Date.parse(`${reservation_date} PST`);
   const date = new Date(timestamp);
-  return date.getDay() == 2
+  return date.getDay() == 2;
 }
 
 // checks if the reservation is after the current time and date
@@ -130,13 +137,13 @@ function reservationNotInTheFuture(reservation_date, reservation_time) {
 // checks if the reservation time is NOT between 10:30 and 21:30
 function reservationTimeNotAllowed(reservation_time) {
   const reservationTime = Number(reservation_time.replace(":", "").slice(0, 4));
-  return reservationTime < 1030 || reservationTime > 2130
+  return reservationTime < 1030 || reservationTime > 2130;
 }
 
 // creates a new reservation adding 'status' key with default value "booked"
 async function create(req, res) {
-  const { data } = req.body
-  const newReservation = { ...data, status: "booked" }
+  const { data } = req.body;
+  const newReservation = { ...data, status: "booked" };
   const newData = await reservationsService.create(newReservation);
   res.status(201).json({ data: newData });
 }
@@ -166,6 +173,30 @@ async function update(req, res) {
   };
   const data = await reservationsService.update(updatedreservation);
   res.json({ data });
+}
+
+// validates that the status !== "finished"
+function statusIsNotFinished(req, res, next) {
+  const { status } = res.locals.reservation;
+  if (status !== "finished") return next();
+
+  next({
+    status: 400,
+    message: `A ${status} reservation cannot be updated.`,
+  });
+}
+
+function hasValidStatusRequest(req, res, next) {
+  const { status } = req.body.data;
+
+  if (status === "booked" || status === "seated" || status === "finished" || status === "cancelled") {
+    return next();
+  }
+
+  next({
+    status: 400,
+    message: `The reservation status ${status} is invalid.`,
+  })
 }
 
 async function destroy(req, res) {
@@ -200,6 +231,7 @@ module.exports = {
     hasOnlyValidProperties,
     hasRequiredProperties,
     hasValidInputs,
+    statusIsBooked,
     asyncErrorBoundary(create),
   ],
   read: [asyncErrorBoundary(reservationExists), read],
@@ -211,4 +243,10 @@ module.exports = {
     asyncErrorBoundary(update),
   ],
   delete: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(destroy)],
+  updateStatus: [
+    asyncErrorBoundary(reservationExists),
+    statusIsNotFinished,
+    hasValidStatusRequest,
+    asyncErrorBoundary(update),
+  ],
 };
