@@ -1,3 +1,10 @@
+/**
+ * 
+ * @param properties
+ * a string/s
+ * @returns {Error}
+ * if the request does not include 'properties'
+ */
 function hasProperties(...properties) {
     return function (req, res, next) {
       const { data = {} } = req.body;
