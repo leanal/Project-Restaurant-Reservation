@@ -149,15 +149,15 @@ async function create(req, res) {
 }
 
 async function reservationExists(req, res, next) {
-  const { reservationId } = req.params;
-  const reservation = await reservationsService.read(reservationId);
+  const { reservation_id } = req.params;
+  const reservation = await reservationsService.read(reservation_id);
   if (reservation) {
     res.locals.reservation = reservation;
     return next();
   }
   next({
     status: 404,
-    message: `Reservation ID ${reservationId} does not exist.`,
+    message: `Reservation ID ${reservation_id} does not exist.`,
   });
 }
 
