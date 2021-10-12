@@ -3,7 +3,7 @@ const hasProperties = require("../errors/hasProperties");
 // const hasRequiredProperties = hasProperties("table_name", "capacity", "reservation_id");
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 
-const VALID_PROPERTIES = ["table_name", "capacity", "reservation_id"];
+const VALID_PROPERTIES = ["table_id", "table_name", "capacity", "reservation_id"];
 /**
  * Validates the request properties
  * @param req
