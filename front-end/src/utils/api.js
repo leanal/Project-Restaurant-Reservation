@@ -59,11 +59,74 @@ async function fetchJson(url, options, onCancel) {
  */
 
 export async function listReservations(params, signal) {
+  // const url = new URL(`${API_BASE_URL}/reservations`);
   const url = new URL(`${API_BASE_URL}/reservations`);
+  console.log("params",params);
   Object.entries(params).forEach(([key, value]) =>
     url.searchParams.append(key, value.toString())
   );
+  console.log("url",url);
   return await fetchJson(url, { headers, signal }, [])
     .then(formatReservationDate)
     .then(formatReservationTime);
+}
+
+ /**
+  * Retrieves the reservation with the specified `reservation_id`
+  * @param reservation_id
+  *  the `id` property matching the desired reservation.
+  * @param signal
+  *  optional AbortController.signal
+  * @returns {Promise<any>}
+  *  a promise that resolves to the saved reservation.
+  */
+  export async function readReservation(reservation_id, signal) {
+    const url = `${API_BASE_URL}/reservations/${reservation_id}`;
+    return await fetchJson(url, { signal }, {});
+  }
+
+/**
+  * Updates an existing reservation
+  * @param updatedReservation
+  *  the reservation to save, which must have an `id` property.
+  * @param signal
+  *  optional AbortController.signal
+  * @returns {Promise<Error|*>}
+  *  a promise that resolves to the updated reservation.
+  */
+ export async function updateReservation(updatedReservation, signal) {
+  const url = `${API_BASE_URL}/reservations/${updatedReservation.id}`;
+  const options = {
+    method: "PUT",
+    headers,
+    body: JSON.stringify(updatedReservation),
+    signal,
+  };
+  return await fetchJson(url, options, updatedReservation);
+}
+
+export async function listTables(signal) {
+  const url = new URL(`${API_BASE_URL}/tables`);
+  return await fetchJson(url, { headers, signal }, [])
+}
+
+/**
+  * Updates an existing table
+  * @param updatedTable
+  *  the table to save, which must have an `table_id` property.
+  * @param signal
+  *  optional AbortController.signal
+  * @returns {Promise<Error|*>}
+  *  a promise that resolves to the updated table.
+  */
+ export async function updateTable(updatedTable, signal) {
+   console.log("before PUT",updatedTable);
+  const url = `${API_BASE_URL}/tables/${updatedTable.table_id}/seat`;
+  const options = {
+    method: "PUT",
+    headers,
+    body: JSON.stringify({ data: updatedTable }),
+    signal,
+  };
+  return await fetchJson(url, options, updatedTable);
 }
