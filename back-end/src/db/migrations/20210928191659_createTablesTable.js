@@ -4,12 +4,12 @@ exports.up = function(knex) {
       table.increments("table_id").primary() // sets table_id as the primary key
       table.string("table_name").notNullable()
       table.integer("capacity").notNullable()
-      table.integer("reservation_id")//.unsigned()
-    //   table
-    //     .foreign("reservation_id")
-    //     .references("reservation_id")
-    //     .inTable("reservations")
-    //     .onDelete("cascade");
+      table.integer("reservation_id").unsigned()
+      table
+        .foreign("reservation_id")
+        .references("reservation_id")
+        .inTable("reservations")
+        .onDelete("cascade");
       table.timestamps(true, true)
     })
 };
