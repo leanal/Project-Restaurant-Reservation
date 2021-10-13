@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import {
   readReservation,
-  updateReservation,
+//   updateReservation,
   listTables,
   updateTable,
 } from "../utils/api";
@@ -47,7 +47,7 @@ export default function SeatReservation() {
     event.preventDefault();
 
     const abortController = new AbortController();
-    console.log(tableId);
+    // console.log(tableId);
     const updatedTable = {
         table_id: tableId,
       reservation_id: reservation.reservation_id,
@@ -57,8 +57,8 @@ export default function SeatReservation() {
     return () => abortController.abort();
   };
 
-  console.log(reservation);
-  console.log("tableId",tableId);
+//   console.log(reservation);
+//   console.log("tableId",tableId);
   // filter tables without existing reservation and with capacity that could seat reservation.people
   const filteredTables = tables.filter(
     (table) => !table.reservation_id && table.capacity >= reservation.people
