@@ -140,10 +140,8 @@ async function updateReservationStatusToSeated(req, res, next) {
   const updatedReservation = {
     ...res.locals.reservation,
     status: "seated",
-    // reservation_id: res.locals.reservation.reservation_id,
   };
-  const data = await tablesService.updateReservation(updatedReservation);
-  // console.log("updateReservation", data)
+  const data = await tablesService.updateReservationStatus(updatedReservation);
   next();
 }
 
@@ -176,9 +174,8 @@ async function updateReservationStatusToFinished(req, res, next) {
   const updatedReservation = {
     ...res.locals.reservation,
     status: "finished",
-    // reservation_id: res.locals.reservation.reservation_id,
   };
-  const data = await tablesService.updateReservation(updatedReservation);
+  const data = await tablesService.updateReservationStatus(updatedReservation);
   next();
 }
 
