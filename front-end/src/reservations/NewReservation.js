@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useHistory } from "react-router";
 import { createReservation } from "../utils/api";
-// import Dashboard from "../dashboard/Dashboard";
 
 export default function NewReservation() {
   const history = useHistory();
@@ -11,7 +10,7 @@ export default function NewReservation() {
   const [people, setPeople] = useState();
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
-  const [errorMessage, setErrorMessage] = useState("")
+  const [errorMessage, setErrorMessage] = useState("");
 
   const firstNameChangeHandler = (event) => setFirstName(event.target.value);
   const lastNameChangeHandler = (event) => setLastName(event.target.value);
@@ -28,7 +27,6 @@ export default function NewReservation() {
     const abortController = new AbortController();
     const formattedDate = formatDate();
     const formattedTime = formatTime();
-    // console.log("time",formattedTime, time);
     const newReservation = {
       first_name: firstName,
       last_name: lastName,
@@ -39,13 +37,10 @@ export default function NewReservation() {
     };
 
     try {
-      await createReservation(
-        newReservation,
-        abortController.signal
-      );
+      await createReservation(newReservation, abortController.signal);
     } catch (error) {
-      setErrorMessage(error.message)
-      return
+      setErrorMessage(error.message);
+      return;
     }
 
     history.push(`/dashboard?date=${formattedDate}`);
@@ -71,10 +66,10 @@ export default function NewReservation() {
   return (
     <div>
       <h1>New Reservation</h1>
-      <hr></hr>
       <div className="d-md-flex mb-3">
         <h4>Complete all fields to create a new reservation</h4>
       </div>
+      <hr></hr>
       {errorMessage && <p className="alert alert-danger">{errorMessage}</p>}
       <form className="row g-3" onSubmit={submitClickHandler}>
         <div className="col-md-6">
@@ -131,16 +126,6 @@ export default function NewReservation() {
             onChange={peopleChangeHandler}
           ></input>
         </div>
-        {/* <div className="col-md-6">
-          <label htmlFor="inputParty" className="form-label">
-            Party of
-          </label>
-          <input
-            type="number"
-            className="form-control"
-            id="inputParty"
-          ></input>
-        </div> */}
         <div className="col-md-6">
           <label htmlFor="inputDate" className="form-label">
             Date
