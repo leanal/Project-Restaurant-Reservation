@@ -61,11 +61,11 @@ async function fetchJson(url, options, onCancel) {
 export async function listReservations(params, signal) {
   // const url = new URL(`${API_BASE_URL}/reservations`);
   const url = new URL(`${API_BASE_URL}/reservations`);
-  console.log("params",params);
+  // console.log("params",params);
   Object.entries(params).forEach(([key, value]) =>
     url.searchParams.append(key, value.toString())
   );
-  console.log("url",url);
+  // console.log("url",url);
   return await fetchJson(url, { headers, signal }, [])
     .then(formatReservationDate)
     .then(formatReservationTime);
@@ -105,6 +105,27 @@ export async function listReservations(params, signal) {
   return await fetchJson(url, options, updatedReservation);
 }
 
+/**
+  * Saves reservation to the database.
+  * @param reservation
+  *  the reservation to save, which must not have an `table_id` property
+  *  must have first_name, last_name", mobile_number, reservation_date, reservation_time and people
+  * @param signal
+  *  optional AbortController.signal
+  * @returns {Promise<reservation>}
+  *  a promise that resolves the saved reservation, which will now have an `table_id` and `status` property. `status` will have adefault value "booked".
+  */
+ export async function createReservation(reservation, signal) {
+  const url = `${API_BASE_URL}/reservations`;
+  const options = {
+    method: "POST",
+    headers,
+    body: JSON.stringify({ data: reservation }),
+    signal,
+  };
+  return await fetchJson(url, options, {});
+}
+
 export async function listTables(signal) {
   const url = new URL(`${API_BASE_URL}/tables`);
   return await fetchJson(url, { headers, signal }, [])
@@ -120,7 +141,7 @@ export async function listTables(signal) {
   *  a promise that resolves to the updated table.
   */
  export async function updateTable(updatedTable, signal) {
-   console.log("before PUT",updatedTable);
+  //  console.log("before PUT",updatedTable);
   const url = `${API_BASE_URL}/tables/${updatedTable.table_id}/seat`;
   const options = {
     method: "PUT",

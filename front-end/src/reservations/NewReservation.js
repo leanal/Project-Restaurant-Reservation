@@ -11,13 +11,14 @@ export default function NewReservation() {
   const [people, setPeople] = useState();
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
+  const [errorMessage, setErrorMessage] = useState("")
 
   const firstNameChangeHandler = (event) => setFirstName(event.target.value);
   const lastNameChangeHandler = (event) => setLastName(event.target.value);
   const mobileNumberChangeHandler = (event) =>
     setMobileNumber(event.target.value);
   const peopleChangeHandler = (event) => setPeople(event.target.value);
-  const dateChangeHandler = (event) => setDate(event.target.value)
+  const dateChangeHandler = (event) => setDate(event.target.value);
   const timeChangeHandler = (event) => setTime(event.target.value);
 
   const cancelClickHandler = () => history.goBack();
@@ -25,8 +26,9 @@ export default function NewReservation() {
   async function submitClickHandler(event) {
     event.preventDefault();
     const abortController = new AbortController();
-    const formattedDate = `${date.substring(4, 8)}-${date.substring(0, 2)}-${date.substring(2, 4)}`
-    const formattedTime = `${time.substring(0, 2)}:${time.substring(2, 4)}`
+    const formattedDate = formatDate();
+    const formattedTime = formatTime();
+    // console.log("time",formattedTime, time);
     const newReservation = {
       first_name: firstName,
       last_name: lastName,
@@ -35,15 +37,37 @@ export default function NewReservation() {
       reservation_time: formattedTime,
       people: Number(people),
     };
+
     try {
-    await createReservation(newReservation, abortController.signal);
+      await createReservation(
+        newReservation,
+        abortController.signal
+      );
     } catch (error) {
-        return <div className="alert alert-danger">{window.alert(error.message)}</div>
+      setErrorMessage(error.message)
+      return
     }
-    const dashboard = date ? `/dashboard?date=${formattedDate}` : "/dashboard";
-    history.push(dashboard);
+
+    history.push(`/dashboard?date=${formattedDate}`);
+    return () => abortController.abort();
   }
-  
+
+  function formatDate() {
+    return `${date.substring(4, 8)}-${date.substring(0, 2)}-${date.substring(
+      2,
+      4
+    )}`;
+  }
+  // reformat possible input that includes `pm`
+  function formatTime() {
+    let cleanTime = time.replace(/[\s:]/g, "").toLowerCase();
+    if (cleanTime.includes("pm")) {
+      cleanTime = Number(cleanTime.slice(0, 4)) + 1200;
+      cleanTime = String(cleanTime);
+    }
+    return `${cleanTime.slice(0, 2)}:${cleanTime.slice(2, 4)}`;
+  }
+
   return (
     <div>
       <h1>New Reservation</h1>
@@ -51,9 +75,10 @@ export default function NewReservation() {
       <div className="d-md-flex mb-3">
         <h4>Complete all fields to create a new reservation</h4>
       </div>
+      {errorMessage && <p className="alert alert-danger">{errorMessage}</p>}
       <form className="row g-3" onSubmit={submitClickHandler}>
         <div className="col-md-6">
-          <label for="inputFirstName" className="form-label">
+          <label htmlFor="inputFirstName" className="form-label">
             First Name
           </label>
           <input
@@ -66,7 +91,7 @@ export default function NewReservation() {
           ></input>
         </div>
         <div className="col-md-6">
-          <label for="inputLastName" className="form-label">
+          <label htmlFor="inputLastName" className="form-label">
             Last Name
           </label>
           <input
@@ -79,7 +104,7 @@ export default function NewReservation() {
           ></input>
         </div>
         <div className="col-md-6">
-          <label for="inputMobileNumber" className="form-label">
+          <label htmlFor="inputMobileNumber" className="form-label">
             Mobile Number
           </label>
           <input
@@ -93,7 +118,7 @@ export default function NewReservation() {
           ></input>
         </div>
         <div className="col-md-6">
-          <label for="inputParty" className="form-label">
+          <label htmlFor="inputParty" className="form-label">
             # of Party
           </label>
           <input
@@ -107,7 +132,7 @@ export default function NewReservation() {
           ></input>
         </div>
         {/* <div className="col-md-6">
-          <label for="inputParty" className="form-label">
+          <label htmlFor="inputParty" className="form-label">
             Party of
           </label>
           <input
@@ -117,7 +142,7 @@ export default function NewReservation() {
           ></input>
         </div> */}
         <div className="col-md-6">
-          <label for="inputDate" className="form-label">
+          <label htmlFor="inputDate" className="form-label">
             Date
           </label>
           <input
@@ -132,7 +157,7 @@ export default function NewReservation() {
           ></input>
         </div>
         <div className="col-md-6">
-          <label for="inputTime" className="form-label">
+          <label htmlFor="inputTime" className="form-label">
             Time
           </label>
           <input

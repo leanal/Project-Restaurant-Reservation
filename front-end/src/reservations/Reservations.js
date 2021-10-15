@@ -1,6 +1,4 @@
-// <select name="table_id" />
-// {table.table_name} - {table.capacity}
-// do not seat a reservation with more people than the capacity of the table
+
 
 // default status is "booked"
 // status text must have a data-reservation-id-status={reservation.reservation_id} attribute, so it can be found by the tests.
