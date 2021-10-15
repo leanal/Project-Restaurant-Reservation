@@ -92,7 +92,7 @@ function hasValidInputs(req, res, next) {
   if (reservationNotInTheFuture(reservation_date, reservation_time)) {
     return next({
       status: 400,
-      message: `Please enter a future reservation date.`,
+      message: `Please enter future reservation date.`,
     });
   }
 
