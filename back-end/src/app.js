@@ -13,7 +13,7 @@ const tablesRouter = require("./tables/tables.router");
 
 const app = express();
 
-app.use(morgan("dev"));
+// app.use(morgan("dev"));
 app.use(cors());
 app.use(express.json());
 
