@@ -61,11 +61,9 @@ async function fetchJson(url, options, onCancel) {
 export async function listReservations(params, signal) {
   // const url = new URL(`${API_BASE_URL}/reservations`);
   const url = new URL(`${API_BASE_URL}/reservations`);
-  // console.log("params",params);
   Object.entries(params).forEach(([key, value]) =>
     url.searchParams.append(key, value.toString())
   );
-  // console.log("url",url);
   return await fetchJson(url, { headers, signal }, [])
     .then(formatReservationDate)
     .then(formatReservationTime);
@@ -74,11 +72,11 @@ export async function listReservations(params, signal) {
  /**
   * Retrieves the reservation with the specified `reservation_id`
   * @param reservation_id
-  *  the `id` property matching the desired reservation.
+  *  the `reservation_id` property matching the desired reservation.
   * @param signal
   *  optional AbortController.signal
-  * @returns {Promise<any>}
-  *  a promise that resolves to the saved reservation.
+  * @returns {Promise<Error|*>}
+  *  a promise that resolves to a possible error, if the reservation does not exists.
   */
   export async function readReservation(reservation_id, signal) {
     const url = `${API_BASE_URL}/reservations/${reservation_id}`;
@@ -108,12 +106,12 @@ export async function listReservations(params, signal) {
 /**
   * Saves reservation to the database.
   * @param reservation
-  *  the reservation to save, which must not have an `table_id` property
-  *  must have first_name, last_name", mobile_number, reservation_date, reservation_time and people
+  *  the reservation to save, which must not have an `reservation_id` property
+  *  must have first_name, last_name", mobile_number, reservation_date, reservation_time and people properties
   * @param signal
   *  optional AbortController.signal
   * @returns {Promise<reservation>}
-  *  a promise that resolves the saved reservation, which will now have an `table_id` and `status` property. `status` will have adefault value "booked".
+  *  a promise that resolves the saved reservation, which will now have a `reservation_id` and `status` property. `status` will have a default value "booked".
   */
  export async function createReservation(reservation, signal) {
   const url = `${API_BASE_URL}/reservations`;
@@ -131,6 +129,28 @@ export async function listTables(signal) {
   return await fetchJson(url, { headers, signal }, [])
 }
 
+
+/**
+  * Saves table to the database.
+  * @param table
+  *  the table to save, which must not have an `table_id` property
+  *  must have table_name and capacity properties
+  * @param signal
+  *  optional AbortController.signal
+  * @returns {Promise<table>}
+  *  a promise that resolves the saved table, which will now have a `table_id` and `reservation_id` property.
+  */
+ export async function createTable(table, signal) {
+  const url = `${API_BASE_URL}/tables`;
+  const options = {
+    method: "POST",
+    headers,
+    body: JSON.stringify({ data: table }),
+    signal,
+  };
+  return await fetchJson(url, options, {});
+}
+
 /**
   * Updates an existing table
   * @param updatedTable
@@ -138,7 +158,7 @@ export async function listTables(signal) {
   * @param signal
   *  optional AbortController.signal
   * @returns {Promise<Error|*>}
-  *  a promise that resolves to the updated table.
+  *  a promise that resolves to the updated table. It also updates reservation status to "seated".
   */
  export async function updateTable(updatedTable, signal) {
   //  console.log("before PUT",updatedTable);
@@ -151,3 +171,18 @@ export async function listTables(signal) {
   };
   return await fetchJson(url, options, updatedTable);
 }
+
+ /**
+  * Deletes the `reservation_id` of the specified `table_id`.
+  * @param table_id
+  *  the id of the table to update
+  * @param signal
+  *  optional AbortController.signal
+  * @returns {Promise<Error|*>}
+  *  a promise that resolves to an object with a 'null' `reservation_id`.
+  */
+  export async function deleteTableReservation(table_id, signal) {
+    const url = `${API_BASE_URL}/tables/${table_id}/seat`;
+    const options = { method: "DELETE", signal };
+    return await fetchJson(url, options);
+  }
