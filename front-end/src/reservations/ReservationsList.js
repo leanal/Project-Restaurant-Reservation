@@ -12,7 +12,9 @@ export default function ReservationsList({ reservations = [] }) {
           <th scope="col">Time</th>
           <th scope="col"># of People</th>
           <th scope="col">Status</th>
-          <th scope="col">Action</th>
+          <th scope="col"></th>
+          <th scope="col"></th>
+          <th scope="col"></th>
         </tr>
       </thead>
       <tbody>

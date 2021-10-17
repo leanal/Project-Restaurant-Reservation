@@ -11,12 +11,18 @@ export default function ReservationForm({
   reservation_time = "",
 }) {
   const history = useHistory();
-  const [firstName, setFirstName] = useState(first_name);
-  const [lastName, setLastName] = useState(last_name);
-  const [mobileNumber, setMobileNumber] = useState(mobile_number);
-  const [party, setParty] = useState(people);
-  const [date, setDate] = useState(reservation_date);
-  const [time, setTime] = useState(reservation_time);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [mobileNumber, setMobileNumber] = useState("");
+  const [party, setParty] = useState();
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+//   const [firstName, setFirstName] = useState(first_name);
+//   const [lastName, setLastName] = useState(last_name);
+//   const [mobileNumber, setMobileNumber] = useState(mobile_number);
+//   const [party, setParty] = useState(people);
+//   const [date, setDate] = useState(reservation_date);
+//   const [time, setTime] = useState(reservation_time);
   const [errorMessage, setErrorMessage] = useState("");
 
   const firstNameChangeHandler = (event) => setFirstName(event.target.value);
@@ -78,7 +84,7 @@ export default function ReservationForm({
     <>
       {errorMessage && <p className="alert alert-danger">{errorMessage}</p>}
       <form className="row g-3" onSubmit={submitClickHandler}>
-        <div className="col-md-6">
+        <div className="col-md-6 form-group">
           <label htmlFor="inputFirstName" className="form-label">
             First Name
           </label>
@@ -88,7 +94,7 @@ export default function ReservationForm({
             className="form-control"
             id="inputFirstName"
             required={true}
-            value={firstName}
+            defaultValue={first_name}
             onChange={firstNameChangeHandler}
           ></input>
         </div>
@@ -102,7 +108,7 @@ export default function ReservationForm({
             className="form-control"
             id="inputLastName"
             required={true}
-            value={lastName}
+            defaultValue={last_name}
             onChange={lastNameChangeHandler}
           ></input>
         </div>
@@ -117,7 +123,7 @@ export default function ReservationForm({
             id="inputMobileNumber"
             placeholder="xxx-xx-xxxx"
             required={true}
-            value={mobileNumber}
+            defaultValue={mobile_number}
             onChange={mobileNumberChangeHandler}
           ></input>
         </div>
@@ -132,7 +138,7 @@ export default function ReservationForm({
             id="inputParty"
             placeholder="Enter a number"
             required={true}
-            value={party}
+            defaultValue={people}
             onChange={partyChangeHandler}
           ></input>
         </div>
@@ -147,7 +153,7 @@ export default function ReservationForm({
             id="inputDate"
             placeholder="MMDDYYYY"
             required={true}
-            value={date}
+            defaultValue={reservation_date}
             onChange={dateChangeHandler}
           ></input>
         </div>
@@ -162,7 +168,7 @@ export default function ReservationForm({
             id="inputTime"
             placeholder="Ex. 14:00"
             required={true}
-            value={time}
+            defaultValue={reservation_time}
             onChange={timeChangeHandler}
           ></input>
         </div>

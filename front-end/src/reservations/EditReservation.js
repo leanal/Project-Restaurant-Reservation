@@ -11,22 +11,22 @@ export default function EditReservation() {
     const abortController = new AbortController();
 
     async function loadReservation() {
-        try {
-      const data = await readReservation(
-        reservation_id,
-        abortController.signal
-      );
-      setReservation(data);
-        } catch (error) {
-            
-        }
+      try {
+        const data = await readReservation(
+          reservation_id,
+          abortController.signal
+        );
+        setReservation(data);
+      } catch (error) {
+        return <p className="alert alert-danger">{error.message}</p>
+      }
     }
 
     loadReservation();
 
     return () => abortController.abort();
   }, [reservation_id]);
-
+  
   return (
     <div>
       <h1>Edit Reservation</h1>
@@ -34,13 +34,14 @@ export default function EditReservation() {
         <h4>Complete all fields to edit a new reservation</h4>
       </div>
       <hr></hr>
-      {/* <ReservationForm
-        first_name={first_name}
-        last_name={last_name}
-        mobile_number={mobile_number}
-        reservation_date={reservation_date}
-        reservation_time={reservation_time}
-      /> */}
+      <ReservationForm
+        first_name={reservation.first_name}
+        last_name={reservation.last_name}
+        mobile_number={reservation.mobile_number}
+        people={reservation.people}
+        reservation_date={reservation.reservation_date}
+        reservation_time={reservation.reservation_time}
+      />
     </div>
   );
 }
