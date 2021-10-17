@@ -22,9 +22,9 @@ export default function ReservationView({ reservation }) {
           <td>{reservation_date}</td>
           <td>{reservation_time}</td>
           <td>{people}</td>
-          <td>{status}</td>
-          {/* hides the 'Seat' button if the reservation has been seated */}
-          {status === "booked" && <td><a href={`/reservations/${reservation_id}/seat`} >Seat</a></td>}
+          <td data-reservation-id-status={reservation.reservation_id}>{status}</td>
+          {/* hides the 'Seat' button when the reservation has been seated */}
+          {status === "booked" ? <td><a className="btn btn-secondary" href={`/reservations/${reservation_id}/seat`} >Seat</a></td> : <td></td>}
         </tr>
       )
 }
