@@ -1,17 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
-import {
-  readReservation,
-//   updateReservation,
-  listTables,
-  updateTable,
-} from "../utils/api";
+import { readReservation, listTables, updateTable } from "../utils/api";
 
 export default function SeatReservation() {
   const { reservation_id } = useParams();
   const [reservation, setReservation] = useState({});
   const [tables, setTables] = useState([]);
   const [tableId, setTableId] = useState();
+  const [errorMessage, setErrorMessage] = useState("");
   const history = useHistory();
 
   useEffect(() => {
@@ -47,58 +43,61 @@ export default function SeatReservation() {
     event.preventDefault();
 
     const abortController = new AbortController();
-    // console.log(tableId);
     const updatedTable = {
-        table_id: tableId,
+      table_id: tableId,
       reservation_id: reservation.reservation_id,
     };
-    await updateTable(updatedTable, abortController.signal);
-    history.push("/dashboard")
+    try {
+      await updateTable(updatedTable, abortController.signal);
+    } catch (error) {
+      setErrorMessage(error.message);
+      return;
+    }
+    history.push("/dashboard");
     return () => abortController.abort();
   };
 
-//   console.log(reservation);
-//   console.log("tableId",tableId);
-  // filter tables without existing reservation and with capacity that could seat reservation.people
-  const filteredTables = tables.filter(
-    (table) => !table.reservation_id && table.capacity >= reservation.people
-  );
-
-  // options list
-  // <select name="table_id" />
-  // {table.table_name} - {table.capacity}
-
-  // submitHandler => put request "/:table_id/seat"
-  //
+  // filter tables without an assigned reservation
+  const unassignedTables = tables.filter((table) => !table.reservation_id);
 
   return (
-    <>
-      {/* <div className="btn-group">
-        <button
-          type="button"
-          className="btn btn-secondary dropdown-toggle"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-        >
-          Choose a table
-        </button>
-        <ul className="dropdown-menu">
-          {filteredTables.map((table) => (
-            <li
-              className="dropdown-item"
-              onClick={() => setTableId(table.table_id)}
-            >{`${table.table_name} - ${table.capacity}`}</li>
-          ))}
-        </ul>
-      </div> */}
-
-      <select className="form-select" name="table_id" onChange={(e) => setTableId(e.target.value)}>
-        <option selected>Choose a table</option>
-          {filteredTables.map((table) => (
-              <option value={table.table_id}>{`${table.table_name} - ${table.capacity}`}</option>
-          ))}
-      </select>
-      <button className="btn btn-primary" type="button" onClick={submitHandler}>Submit</button>
-    </>
+    <div>
+      <h1>Seat Reservation</h1>
+      <div className="d-md-flex mb-3">
+        <h4>Assign a table to the reservation</h4>
+      </div>
+      {errorMessage && <p className="alert alert-danger">{errorMessage}</p>}
+      <hr></hr>
+      <form className="row g-3" onSubmit={submitHandler}>
+        <div className="col-md-6">
+          <select
+            name="table_id"
+            className="form-select"
+            onChange={(e) => setTableId(e.target.value)}
+          >
+            <option defaultValue>Choose a table</option>
+            {unassignedTables.map((table) =>
+              table.capacity >= reservation.people ? (
+                <option
+                  value={table.table_id}
+                  key={table.table_id}
+                >{`${table.table_name} - ${table.capacity}`}</option>
+              ) : (
+                <option
+                  value={table.table_id}
+                  key={table.table_id}
+                  disabled
+                >{`${table.table_name} - ${table.capacity}`}</option>
+              )
+            )}
+          </select>
+        </div>
+        <div className="col-md-6">
+          <button className="btn btn-primary" type="submit">
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }
