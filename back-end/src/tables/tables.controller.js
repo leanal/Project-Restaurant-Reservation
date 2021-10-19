@@ -186,7 +186,14 @@ async function deleteReservationId(req, res) {
     // table_id: res.locals.table.table_id,
   };
   const data = await tablesService.update(updatedTable);
+  console.log(res.url);
   res.json({ data });
+}
+
+async function destroy(req, res) {
+  const { table_id } = res.locals.table
+  await tablesService.delete(table_id);
+  res.sendStatus(204);
 }
 
 module.exports = {
@@ -216,4 +223,8 @@ module.exports = {
     asyncErrorBoundary(updateReservationStatusToFinished),
     asyncErrorBoundary(deleteReservationId),
   ],
+  delete: [
+    asyncErrorBoundary(tableExists),
+    asyncErrorBoundary(destroy)
+  ]
 };

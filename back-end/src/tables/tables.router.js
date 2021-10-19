@@ -15,6 +15,12 @@ router
   .all(methodNotAllowed);
 
 router
+  .route("/:table_id")
+  .get(controller.read)
+  .delete(controller.delete)
+  .all(methodNotAllowed);
+
+router
   .route("/:table_id/seat")
   .put(controller.update)
   .delete(controller.deleteReservationId)

@@ -43,6 +43,10 @@ function deleteReservationId(updatedTable) {
     .then((updatedRecords) => updatedRecords[0])
   }
 
+  function destroy(table_id) {
+    return knex("tables").where({ table_id }).del();
+  }
+
 module.exports = {
   create,
   list,
@@ -50,5 +54,6 @@ module.exports = {
   readReservation,
   update,
   updateReservationStatus,
-  deleteReservationId
+  deleteReservationId,
+  delete: destroy
 };
