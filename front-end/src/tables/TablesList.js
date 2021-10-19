@@ -1,42 +1,48 @@
 import { useState } from "react";
 import TableView from "./TableView";
-import { deleteTableReservation } from "../utils/api";
+// import { deleteTableReservation } from "../utils/api";
+import FinishTable from "./FinishTable";
 
 export default function TablesList({ tables }) {
-  const [tableToFinish, setTableToFinish] = useState(0)
-  async function okClickHandler(table_id) {
-    const abortController = new AbortController();
-    try {
-      await deleteTableReservation(tableToFinish, abortController.signal);
-    } catch (error) {
-      console.log(error.message);
-    }
-    // history.push("/dashboard")
-    window.location.reload();
-    return () => abortController.abort();
-  }
+  const [tableToFinish, setTableToFinish] = useState(0);
+  // async function okClickHandler() {
+  //   const abortController = new AbortController();
+  //   try {
+  //     await deleteTableReservation(tableToFinish, abortController.signal);
+  //   } catch (error) {
+  //     console.log(error.message);
+  //   }
+  //   // history.push("/dashboard")
+  //   window.location.reload();
+  //   return () => abortController.abort();
+  // }
   return (
     <>
-    <table className="table table-striped table-hover">
-      <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">Description</th>
-          <th scope="col">Capacity</th>
-          <th scope="col"> </th>
-          <th scope="col">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        {!tables && "No available tables."}
-        {tables.map((table) => (
-          <TableView table={table} key={table.table_id} setTableToFinish={setTableToFinish} okClickHandler={okClickHandler} />
-        ))}
-      </tbody>
-    </table>
-    
+      <table className="table table-striped table-hover">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Description</th>
+            <th scope="col">Capacity</th>
+            <th scope="col"> </th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {!tables && "No available tables."}
+          {tables.map((table) => (
+            <TableView
+              table={table}
+              key={table.table_id}
+              setTableToFinish={setTableToFinish}
+            />
+          ))}
+        </tbody>
+      </table>
+
       {/* A modal pops up after 'Finish' button is clicked */}
-      <div
+      <FinishTable tableToFinish={tableToFinish} />
+      {/* <div
         className="modal fade"
         id="staticBackdrop"
         data-bs-backdrop="static"
@@ -81,7 +87,7 @@ export default function TablesList({ tables }) {
             </div>
           </div>
         </div>
-      </div>
-      </>
+      </div> */}
+    </>
   );
 }

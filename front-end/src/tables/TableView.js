@@ -38,8 +38,8 @@ export default function TableView({ table, setTableToFinish, okClickHandler }) {
 
         {/* {reservation_id ? <td><a className="btn btn-secondary" href={`/tables/${table_id}/seat`} data-table-id-finish={table.table_id} >Finish</a></td> : <td></td>} */}
         {/* shows the 'Finish' button if the table is occupied */}
-        {reservation_id ? (
-          <td>
+        <td>
+          {reservation_id && (
             <button
               type="button"
               className="btn btn-primary"
@@ -50,10 +50,8 @@ export default function TableView({ table, setTableToFinish, okClickHandler }) {
             >
               Finish
             </button>
-          </td>
-        ) : (
-          <td></td>
-        )}
+          )}
+        </td>
       </tr>
     </>
   );
