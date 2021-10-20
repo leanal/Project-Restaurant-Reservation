@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router";
 import { listReservations, listTables } from "../utils/api";
+import useQuery from "../utils/useQuery";
 import ErrorAlert from "../layout/ErrorAlert";
 import ReservationsList from "../reservations/ReservationsList";
 import TablesList from "../tables/TablesList";
@@ -17,21 +18,11 @@ function Dashboard({ date }) {
   const [tables, setTables] = useState([]);
   const [tableToFinish, setTableToFinish] = useState(0);
   const [reservationToCancel, setReservationToCancel] = useState({})
-  const query = new URLSearchParams(useLocation().search);
+  const query = useQuery()
   const dateQuery = query.get("date");
 
   if (dateQuery) date = dateQuery;
 
-  // useEffect(loadReservations, [date]);
-
-  // function loadReservations() {
-  //   const abortController = new AbortController();
-  //   setReservationsError(null);
-  //   listReservations({ date }, abortController.signal)
-  //     .then(setReservations)
-  //     .catch(setReservationsError);
-  //   return () => abortController.abort();
-  // }
   useEffect(() => {
     const abortController = new AbortController();
 
