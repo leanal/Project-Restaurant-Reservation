@@ -1,29 +1,40 @@
-import { useState } from "react";
+// import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
-import { createReservation, updateReservation } from "../utils/api";
+// import { createReservation, updateReservation } from "../utils/api";
 
 export default function ReservationForm({
-  first_name = "",
-  last_name = "",
-  mobile_number = "",
-  people,
-  reservation_date = "",
-  reservation_time = "",
+    submitClickHandler,
+    setFirstName,
+    setLastName,
+    setMobileNumber,
+    setParty,
+    setDate,
+    setTime,
+    firstName,
+    lastName,
+    mobileNumber,
+    party,
+    date,
+    time,
+    errorMessage
 }) {
+    
   const history = useHistory();
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [mobileNumber, setMobileNumber] = useState("");
-  const [party, setParty] = useState();
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
-//   const [firstName, setFirstName] = useState(first_name);
-//   const [lastName, setLastName] = useState(last_name);
-//   const [mobileNumber, setMobileNumber] = useState(mobile_number);
-//   const [party, setParty] = useState(people);
-//   const [date, setDate] = useState(reservation_date);
-//   const [time, setTime] = useState(reservation_time);
-  const [errorMessage, setErrorMessage] = useState("");
+//   const { reservation_id } = useParams()
+//   const [firstName, setFirstName] = useState("");
+//   const [lastName, setLastName] = useState("");
+//   const [mobileNumber, setMobileNumber] = useState("");
+//   const [party, setParty] = useState();
+//   const [date, setDate] = useState("");
+//   const [time, setTime] = useState("");
+  //   const [firstName, setFirstName] = useState(first_name);
+  //   const [lastName, setLastName] = useState(last_name);
+  //   const [mobileNumber, setMobileNumber] = useState(mobile_number);
+  //   const [party, setParty] = useState(people);
+  //   const [date, setDate] = useState(reservation_date);
+  //   const [time, setTime] = useState(reservation_time);
+//   const [errorMessage, setErrorMessage] = useState("");
+//   console.log("firstName",firstName);
 
   const firstNameChangeHandler = (event) => setFirstName(event.target.value);
   const lastNameChangeHandler = (event) => setLastName(event.target.value);
@@ -35,50 +46,50 @@ export default function ReservationForm({
 
   const cancelClickHandler = () => history.goBack();
 
-  async function submitClickHandler(event) {
-    event.preventDefault();
-    const abortController = new AbortController();
-    const formattedDate = formatDate();
-    const formattedTime = formatTime();
-    const reservation = {
-      first_name: firstName,
-      last_name: lastName,
-      mobile_number: mobileNumber,
-      reservation_date: formattedDate,
-      reservation_time: formattedTime,
-      people: Number(party),
-    };
+//   async function submitClickHandler(event) {
+//     event.preventDefault();
+//     const abortController = new AbortController();
+//     const formattedDate = formatDate();
+//     const formattedTime = formatTime();
+//     const reservation = {
+//       first_name: firstName,
+//       last_name: lastName,
+//       mobile_number: mobileNumber,
+//       reservation_date: formattedDate,
+//       reservation_time: formattedTime,
+//       people: Number(party),
+//     };
+//     try {
+//       if (reservation_id) {
+//           const reservationId = Number(reservation_id)
+//         await updateReservation({ reservation_id: reservationId, ...reservation }, abortController.signal);
+//       } else {
+//         await createReservation(reservation, abortController.signal);
+//       }
+//     } catch (error) {
+//       setErrorMessage(error.message);
+//       return;
+//     }
 
-    try {
-      if (first_name) {
-        await updateReservation(reservation, abortController.signal);
-      } else {
-        await createReservation(reservation, abortController.signal);
-      }
-    } catch (error) {
-      setErrorMessage(error.message);
-      return;
-    }
+//     history.push(`/dashboard?date=${formattedDate}`);
+//     return () => abortController.abort();
+//   }
 
-    history.push(`/dashboard?date=${formattedDate}`);
-    return () => abortController.abort();
-  }
-
-  function formatDate() {
-    return `${date.substring(4, 8)}-${date.substring(0, 2)}-${date.substring(
-      2,
-      4
-    )}`;
-  }
-  // reformat possible input that includes `pm`
-  function formatTime() {
-    let cleanTime = time.replace(/[\s:]/g, "").toLowerCase();
-    if (cleanTime.includes("pm")) {
-      cleanTime = Number(cleanTime.slice(0, 4)) + 1200;
-      cleanTime = String(cleanTime);
-    }
-    return `${cleanTime.slice(0, 2)}:${cleanTime.slice(2, 4)}`;
-  }
+//   function formatDate() {
+//     return `${date.substring(4, 8)}-${date.substring(0, 2)}-${date.substring(
+//       2,
+//       4
+//     )}`;
+//   }
+//   // reformat possible input that includes `pm`
+//   function formatTime() {
+//     let cleanTime = time.replace(/[\s:]/g, "").toLowerCase();
+//     if (cleanTime.includes("pm")) {
+//       cleanTime = Number(cleanTime.slice(0, 4)) + 1200;
+//       cleanTime = String(cleanTime);
+//     }
+//     return `${cleanTime.slice(0, 2)}:${cleanTime.slice(2, 4)}`;
+//   }
 
   return (
     <>
@@ -94,7 +105,7 @@ export default function ReservationForm({
             className="form-control"
             id="inputFirstName"
             required={true}
-            defaultValue={first_name}
+            value={firstName}
             onChange={firstNameChangeHandler}
           ></input>
         </div>
@@ -108,7 +119,7 @@ export default function ReservationForm({
             className="form-control"
             id="inputLastName"
             required={true}
-            defaultValue={last_name}
+            value={lastName}
             onChange={lastNameChangeHandler}
           ></input>
         </div>
@@ -123,7 +134,7 @@ export default function ReservationForm({
             id="inputMobileNumber"
             placeholder="xxx-xx-xxxx"
             required={true}
-            defaultValue={mobile_number}
+            value={mobileNumber}
             onChange={mobileNumberChangeHandler}
           ></input>
         </div>
@@ -138,7 +149,7 @@ export default function ReservationForm({
             id="inputParty"
             placeholder="Enter a number"
             required={true}
-            defaultValue={people}
+            value={party}
             onChange={partyChangeHandler}
           ></input>
         </div>
@@ -153,7 +164,7 @@ export default function ReservationForm({
             id="inputDate"
             placeholder="MMDDYYYY"
             required={true}
-            defaultValue={reservation_date}
+            value={date}
             onChange={dateChangeHandler}
           ></input>
         </div>
@@ -168,7 +179,7 @@ export default function ReservationForm({
             id="inputTime"
             placeholder="Ex. 14:00"
             required={true}
-            defaultValue={reservation_time}
+            value={time}
             onChange={timeChangeHandler}
           ></input>
         </div>

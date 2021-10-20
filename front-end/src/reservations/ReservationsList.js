@@ -1,7 +1,11 @@
+import { useState } from "react";
 import ReservationView from "./ReservationView";
+import CancelReservation from "./CancelReservation";
 
-export default function ReservationsList({ reservations = [] }) {
+export default function ReservationsList({ reservations = [], setReservationToCancel, reservationToCancel }) {
+  // const [reservationToCancel, setReservationToCancel] = useState({})
   return (
+    <>
     <table className="table table-striped table-hover">
       <thead>
         <tr>
@@ -18,8 +22,12 @@ export default function ReservationsList({ reservations = [] }) {
         </tr>
       </thead>
       <tbody>
-        {reservations.map((reservation) => <ReservationView reservation={reservation} key={reservation.reservation_id} />)}
+        {reservations.map((reservation) => <ReservationView reservation={reservation} key={reservation.reservation_id} setReservationToCancel={setReservationToCancel} />)}
       </tbody>
     </table>
+    
+      {/* A modal pops up after 'Cancel' button is clicked */}
+      <CancelReservation reservationToCancel={reservationToCancel} />
+    </>
   );
 }

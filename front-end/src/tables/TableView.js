@@ -44,7 +44,7 @@ export default function TableView({ table, setTableToFinish, okClickHandler }) {
               type="button"
               className="btn btn-primary"
               data-bs-toggle="modal"
-              data-bs-target="#staticBackdrop"
+              data-bs-target="#finish"
               data-table-id-finish={table_id}
               onClick={() => setTableToFinish(table_id)}
             >

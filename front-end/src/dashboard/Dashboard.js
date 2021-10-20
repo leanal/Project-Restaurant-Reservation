@@ -14,23 +14,40 @@ import TablesList from "../tables/TablesList";
 function Dashboard({ date }) {
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
-  const [tables, setTables] = useState([])
-  const query = new URLSearchParams(useLocation().search)
-  const dateQuery = query.get("date")
+  const [tables, setTables] = useState([]);
+  const [tableToFinish, setTableToFinish] = useState(0);
+  const [reservationToCancel, setReservationToCancel] = useState({})
+  const query = new URLSearchParams(useLocation().search);
+  const dateQuery = query.get("date");
 
-  if (dateQuery) date = dateQuery
-  
-  useEffect(loadReservations, [date]);
+  if (dateQuery) date = dateQuery;
 
-  function loadReservations() {
+  // useEffect(loadReservations, [date]);
+
+  // function loadReservations() {
+  //   const abortController = new AbortController();
+  //   setReservationsError(null);
+  //   listReservations({ date }, abortController.signal)
+  //     .then(setReservations)
+  //     .catch(setReservationsError);
+  //   return () => abortController.abort();
+  // }
+  useEffect(() => {
     const abortController = new AbortController();
-    setReservationsError(null);
-    listReservations({ date }, abortController.signal)
-      .then(setReservations)
-      .catch(setReservationsError);
+
+    async function loadReservations() {
+      setReservationsError(null);
+      try {
+        const data = await listReservations({ date }, abortController.signal);
+        setReservations(data);
+      } catch (error) {
+        setReservationsError(error);
+      }
+    }
+    loadReservations();
     return () => abortController.abort();
-  }
-  
+  }, [date, reservationToCancel]);
+
   useEffect(() => {
     const abortController = new AbortController();
 
@@ -42,22 +59,28 @@ function Dashboard({ date }) {
     loadTables();
 
     return () => abortController.abort();
-  }, []);
+  }, [tableToFinish]);
+
+  const unfinishedReservations = reservations.filter(reservation => reservation.status !== "finished")
 
   return (
     <main>
       <h1>Dashboard</h1>
       <div className="d-md-flex mb-3">
-        <h4 className="mb-0">{reservations.length > 0 ? `Reservations for ${date}` : "(No reservations for today.)"}</h4>
+        <h4 className="mb-0">
+          {reservations.length > 0
+            ? `Reservations for ${date}`
+            : "(No reservations for today.)"}
+        </h4>
       </div>
       <ErrorAlert error={reservationsError} />
-      <ReservationsList reservations={reservations} />
+      <ReservationsList reservations={unfinishedReservations} reservationToCancel={reservationToCancel} setReservationToCancel={setReservationToCancel} />
       <br></br>
       <hr></hr>
       <div className="d-md-flex mb-3">
         <h4 className="mb-0">List of Tables</h4>
       </div>
-      <TablesList tables={tables} />
+      <TablesList tables={tables} setTableToFinish={setTableToFinish} tableToFinish={tableToFinish} />
     </main>
   );
 }

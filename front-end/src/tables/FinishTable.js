@@ -1,64 +1,40 @@
-import { useState } from "react";
-import TableView from "./TableView";
-import { deleteTableReservation, listTables } from "../utils/api";
-import FinishTable from "./FinishTable";
-import { useHistory } from "react-router";
+// import { useHistory } from "react-router-dom";
+// import Dashboard from "../dashboard/Dashboard";
+import { deleteTableReservation } from "../utils/api";
 
-export default function TablesList({ tables, setTableToFinish, tableToFinish }) {
-  // const [tableToFinish, setTableToFinish] = useState(0);
-  const history = useHistory()
+export default function FinishTable({ tableToFinish }) {
+  // const history = useHistory();
 
-  async function okClickHandler() {
+  async function okClickHandler(event) {
+    event.preventDefault();
     const abortController = new AbortController();
+    console.log(tableToFinish);
     try {
       await deleteTableReservation(tableToFinish, abortController.signal);
-      // await listTables(abortController.signal);
     } catch (error) {
       console.log(error.message);
     }
-    // history.push("/dashboard")
+    
+    // history.push("/dashboard") // does not get rid of the modal 
     window.location.reload();
     return () => abortController.abort();
   }
-  return (
-    <>
-      <table className="table table-striped table-hover">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Description</th>
-            <th scope="col">Capacity</th>
-            <th scope="col">Availability</th>
-            <th scope="col">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {!tables && "No available tables."}
-          {tables.map((table) => (
-            <TableView
-              table={table}
-              key={table.table_id}
-              setTableToFinish={setTableToFinish}
-            />
-          ))}
-        </tbody>
-      </table>
 
-      {/* A modal pops up after 'Finish' button is clicked */}
-      {/* <FinishTable tableToFinish={tableToFinish} /> */}
+  /* A modal pops up after 'Finish' button is clicked */
+  return (
       <div
         className="modal fade"
-        id="finish"
+        id="staticBackdrop"
         data-bs-backdrop="static"
         data-bs-keyboard="false"
         tabIndex="-1"
-        aria-labelledby="finishLabel"
+        aria-labelledby="staticBackdropLabel"
         aria-hidden="true"
       >
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title" id="finishLabel">
+              <h5 className="modal-title" id="staticBackdropLabel">
                 Seat new guests
               </h5>
               <button
@@ -92,6 +68,5 @@ export default function TablesList({ tables, setTableToFinish, tableToFinish }) 
           </div>
         </div>
       </div>
-    </>
   );
 }

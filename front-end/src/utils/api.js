@@ -86,18 +86,38 @@ export async function listReservations(params, signal) {
 /**
   * Updates an existing reservation
   * @param updatedReservation
-  *  the reservation to save, which must have an `id` property.
+  *  the reservation to save, which must have a `reservation_id` property.
   * @param signal
   *  optional AbortController.signal
   * @returns {Promise<Error|*>}
   *  a promise that resolves to the updated reservation.
   */
  export async function updateReservation(updatedReservation, signal) {
-  const url = `${API_BASE_URL}/reservations/${updatedReservation.id}`;
+  const url = `${API_BASE_URL}/reservations/${updatedReservation.reservation_id}`;
   const options = {
     method: "PUT",
     headers,
-    body: JSON.stringify(updatedReservation),
+    body: JSON.stringify({ data: updatedReservation }),
+    signal,
+  };
+  return await fetchJson(url, options, updatedReservation);
+}
+
+/**
+  * Updates the status of an existing reservation
+  * @param updatedReservation
+  *  the reservation to save, which must have a `status` property.
+  * @param signal
+  *  optional AbortController.signal
+  * @returns {Promise<Error|*>}
+  *  a promise that resolves to the updated status of a reservation.
+  */
+ export async function updateReservationStatus(updatedReservation, signal) {
+  const url = `${API_BASE_URL}/reservations/${updatedReservation.reservation_id}/status`;
+  const options = {
+    method: "PUT",
+    headers,
+    body: JSON.stringify({ data: updatedReservation }),
     signal,
   };
   return await fetchJson(url, options, updatedReservation);
@@ -161,7 +181,6 @@ export async function listTables(signal) {
   *  a promise that resolves to the updated table. It also updates reservation status to "seated".
   */
  export async function updateTable(updatedTable, signal) {
-  //  console.log("before PUT",updatedTable);
   const url = `${API_BASE_URL}/tables/${updatedTable.table_id}/seat`;
   const options = {
     method: "PUT",
@@ -182,6 +201,7 @@ export async function listTables(signal) {
   *  a promise that resolves to an object with a 'null' `reservation_id`.
   */
   export async function deleteTableReservation(table_id, signal) {
+    console.log("deleteTableReservation");
     const url = `${API_BASE_URL}/tables/${table_id}/seat`;
     const options = { method: "DELETE", signal };
     return await fetchJson(url, options);

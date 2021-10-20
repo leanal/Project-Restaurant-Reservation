@@ -28,7 +28,6 @@ function Routes() {
       </Route>
       <Route path={`/dashboard`}>
         <Dashboard date={today()} />
-        {console.log("today", today())}
       </Route>
       <Route exact path="/reservations/new">
         <NewReservation />

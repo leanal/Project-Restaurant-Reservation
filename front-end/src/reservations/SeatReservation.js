@@ -6,7 +6,7 @@ export default function SeatReservation() {
   const { reservation_id } = useParams();
   const [reservation, setReservation] = useState({});
   const [tables, setTables] = useState([]);
-  const [tableId, setTableId] = useState();
+  const [tableId, setTableId] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
   const history = useHistory();
 

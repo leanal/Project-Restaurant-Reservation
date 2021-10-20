@@ -1,6 +1,6 @@
 // import { Link } from "react-router-dom"
 
-export default function ReservationView({ reservation }) {
+export default function ReservationView({ reservation, setReservationToCancel }) {
   const {
     reservation_id,
     first_name,
@@ -27,7 +27,7 @@ export default function ReservationView({ reservation }) {
       <td>
         {status === "booked" && (
           <a
-            className="btn btn-secondary"
+            className="btn btn-primary"
             href={`/reservations/${reservation_id}/seat`}
           >
             Seat
@@ -45,17 +45,20 @@ export default function ReservationView({ reservation }) {
           </a>
         )}
       </td>
-      <td>
+      
         {status === "booked" && (
-          <a
-            className="btn btn-secondary"
-            href={`/reservations/${reservation_id}/edit`}
-            data-reservation-id-cancel={reservation_id}
-          >
+          <td><button
+          type="button"
+          className="btn btn-secondary"
+          data-bs-toggle="modal"
+          data-bs-target="#staticBackdrop"
+          data-reservation-id-cancel={reservation_id}
+          onClick={() => setReservationToCancel({ reservation_id, reservation_date })}
+        >
             Cancel
-          </a>
+          </button></td>
         )}
-      </td>
+      
     </tr>
   );
 }
