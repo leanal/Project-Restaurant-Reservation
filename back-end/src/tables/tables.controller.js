@@ -70,7 +70,6 @@ async function tableExists(req, res, next) {
     res.locals.table = table;
     return next();
   }
-
   next({
     status: 404,
     message: `Table ID ${table_id} does not exist.`,
@@ -82,7 +81,7 @@ async function reservationIdExists(req, res, next) {
   if (req.body.data) {
     // checks reservation_id before status changes to "seated"
     reservation_id = req.body.data.reservation_id
-  } else {
+  } else if (res.locals.table) {
     // checks reservation_id before status changes to "finished"
     reservation_id = res.locals.table.reservation_id
   }
@@ -164,12 +163,12 @@ function tableIsOccupied(req, res, next) {
 
   if (reservation_id) return next();
 
-
   next({
     status: 400,
     message: `Table is not occupied.`,
   });
 }
+
 async function updateReservationStatusToFinished(req, res, next) {
   const updatedReservation = {
     ...res.locals.reservation,
@@ -186,7 +185,6 @@ async function deleteReservationId(req, res) {
     // table_id: res.locals.table.table_id,
   };
   const data = await tablesService.update(updatedTable);
-  console.log(res.url);
   res.json({ data });
 }
 
