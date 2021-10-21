@@ -1,13 +1,18 @@
 import { useState } from "react";
 import { useHistory } from "react-router";
 import { createTable } from "../utils/api";
+import ErrorAlert from "../layout/ErrorAlert";
 
+/**
+ * Accepts user input then send a request to create a new `table`
+ * @returns {JSX.Element}
+ */
 export default function NewTable() {
   const history = useHistory();
   const [tableName, setTableName] = useState("");
   const [capacity, setCapacity] = useState(0);
-  const [errorMessage, setErrorMessage] = useState("");
-  
+  const [error, setError] = useState("");
+
   const tableNameChangeHandler = (event) => setTableName(event.target.value);
   const capacityChangeHandler = (event) => setCapacity(event.target.value);
   const cancelClickHandler = () => history.goBack();
@@ -23,7 +28,7 @@ export default function NewTable() {
     try {
       await createTable(newTable, abortController.signal);
     } catch (error) {
-      setErrorMessage(error.message);
+      setError(error);
       return;
     }
 
@@ -38,7 +43,7 @@ export default function NewTable() {
         <h4>Complete all fields to create a new table</h4>
       </div>
       <hr></hr>
-      {errorMessage && <p className="alert alert-danger">{errorMessage}</p>}
+      {error && <ErrorAlert error={error} />}
       <form className="row g-3" onSubmit={submitClickHandler}>
         <div className="col-md-6">
           <label htmlFor="inputTableName" className="form-label">

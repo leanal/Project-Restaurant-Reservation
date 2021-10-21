@@ -201,7 +201,6 @@ export async function listTables(signal) {
   *  a promise that resolves to an object with a 'null' `reservation_id`.
   */
   export async function deleteTableReservation(table_id, signal) {
-    console.log("deleteTableReservation");
     const url = `${API_BASE_URL}/tables/${table_id}/seat`;
     const options = { method: "DELETE", signal };
     return await fetchJson(url, options);
