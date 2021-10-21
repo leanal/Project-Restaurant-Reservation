@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router";
 import { listReservations, listTables } from "../utils/api";
 import useQuery from "../utils/useQuery";
 import ErrorAlert from "../layout/ErrorAlert";
@@ -15,14 +14,16 @@ import TablesList from "../tables/TablesList";
 function Dashboard({ date }) {
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
+  const [tablesError, setTablesError] = useState(null);
   const [tables, setTables] = useState([]);
-  const [tableToFinish, setTableToFinish] = useState(0);
-  const [reservationToCancel, setReservationToCancel] = useState({})
-  const query = useQuery()
+  const query = useQuery();
   const dateQuery = query.get("date");
 
   if (dateQuery) date = dateQuery;
 
+  /**
+   * Get request of `reservations` with `date` query
+   */
   useEffect(() => {
     const abortController = new AbortController();
 
@@ -37,22 +38,33 @@ function Dashboard({ date }) {
     }
     loadReservations();
     return () => abortController.abort();
-  }, [date, reservationToCancel]);
+  }, [date]);
 
+  /**
+   * Get request of all `tables`
+   */
   useEffect(() => {
     const abortController = new AbortController();
 
     async function loadTables() {
-      const data = await listTables(abortController.signal);
-      setTables(data);
+      setReservationsError(null);
+      try {
+        const data = await listTables(abortController.signal);
+        setTables(data);
+      } catch (error) {
+        setTablesError(error);
+      }
     }
 
     loadTables();
 
     return () => abortController.abort();
-  }, [tableToFinish]);
+  }, []);
 
-  const unfinishedReservations = reservations.filter(reservation => reservation.status !== "finished")
+  // filters `reservations` with statuses "booked" and "seated"
+  const unfinishedReservations = reservations.filter(
+    (reservation) => reservation.status !== "finished"
+  );
 
   return (
     <main>
@@ -65,13 +77,16 @@ function Dashboard({ date }) {
         </h4>
       </div>
       <ErrorAlert error={reservationsError} />
-      <ReservationsList reservations={unfinishedReservations} reservationToCancel={reservationToCancel} setReservationToCancel={setReservationToCancel} />
+      <ReservationsList
+        reservations={unfinishedReservations}
+      />
       <br></br>
       <hr></hr>
       <div className="d-md-flex mb-3">
         <h4 className="mb-0">List of Tables</h4>
       </div>
-      <TablesList tables={tables} setTableToFinish={setTableToFinish} tableToFinish={tableToFinish} />
+      <ErrorAlert error={tablesError} />
+      <TablesList tables={tables} />
     </main>
   );
 }
