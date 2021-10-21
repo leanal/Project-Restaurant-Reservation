@@ -1,7 +1,7 @@
 import { useHistory } from "react-router-dom";
 import { deleteTableReservation } from "../utils/api";
 
-export default function FinishButton({ table_id }) {
+export default function FinishTable({ table_id }) {
   const history = useHistory();
 
   async function finishClickHandler(e) {

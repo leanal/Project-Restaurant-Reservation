@@ -1,12 +1,12 @@
 import TableView from "./TableView";
 
 /**
- * A table that lists `tables`
+ * A table that lists the `tables`
  * @param tables
  *  an array of tables
  * @returns {JSX.Element}
  */
-export default function TablesList({ tables }) {
+export default function TablesList({ tables = [] }) {
   return (
     <table className="table table-striped table-hover">
       <thead>

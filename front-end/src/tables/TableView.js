@@ -1,10 +1,10 @@
-import FinishButton from "./FinishButton";
+import FinishTable from "./FinishTable";
 
 export default function TableView({ table }) {
   const { table_id, table_name, capacity, reservation_id } = table;
 
   return (
-    <tr key={table_id}>
+    <tr>
       <th scope="row">{table_id}</th>
       <td>{table_name}</td>
       <td>{capacity}</td>
@@ -14,7 +14,7 @@ export default function TableView({ table }) {
       </td>
 
       {/* shows the 'Finish' button if the table is occupied */}
-      <td>{reservation_id && <FinishButton table_id={table_id} />}</td>
+      <td>{reservation_id && <FinishTable table_id={table_id} />}</td>
     </tr>
   );
 }
