@@ -51,9 +51,6 @@ function hasValidInputs(req, res, next) {
 
 // creates a new 'table' with a reservation_id property
 async function create(req, res) {
-  // const { table_name, capacity } = req.body.data
-  // console.log(req.body.data);
-  // const newTable = {...req.body.data, reservation_id: null }
   const data = await tablesService.create(req.body.data);
   res.status(201).json({ data });
 }
@@ -182,7 +179,6 @@ async function deleteReservationId(req, res) {
   const updatedTable = {
     ...res.locals.table,
     reservation_id: null,
-    // table_id: res.locals.table.table_id,
   };
   const data = await tablesService.update(updatedTable);
   res.json({ data });

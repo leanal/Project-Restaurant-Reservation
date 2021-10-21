@@ -170,7 +170,6 @@ async function update(req, res) {
   const updatedreservation = {
     ...res.locals.reservation,
     ...req.body.data,
-    // reservation_id: res.locals.reservation.reservation_id,
   };
   const data = await reservationsService.update(updatedreservation);
   res.json({ data });
