@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { readReservation, updateReservation } from "../utils/api";
 import ReservationForm from "./ReservationForm";
+import ErrorAlert from "../layout/ErrorAlert";
 
 export default function EditReservation() {
   const { reservation_id } = useParams();
-    // const [reservation, setReservation] = useState({});
   const history = useHistory();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -13,7 +13,7 @@ export default function EditReservation() {
   const [party, setParty] = useState(0);
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -24,7 +24,7 @@ export default function EditReservation() {
           reservation_id,
           abortController.signal
         );
-        const MMDDYYYY = formatDateToMMDDYYY(data.reservation_date)
+        const MMDDYYYY = formatDateToMMDDYYY(data.reservation_date);
         setFirstName(data.first_name);
         setLastName(data.last_name);
         setMobileNumber(data.mobile_number);
@@ -32,7 +32,7 @@ export default function EditReservation() {
         setDate(MMDDYYYY);
         setTime(data.reservation_time);
       } catch (error) {
-        return <p className="alert alert-danger">{error.message}</p>;
+        return <ErrorAlert error={error} />;
       }
     }
 
@@ -41,20 +41,13 @@ export default function EditReservation() {
     return () => abortController.abort();
   }, [reservation_id]);
 
-  //   const firstNameChangeHandler = (event) => setFirstName(event.target.value);
-  //   const lastNameChangeHandler = (event) => setLastName(event.target.value);
-  //   const mobileNumberChangeHandler = (event) => setMobileNumber(event.target.value);
-  //   const partyChangeHandler = (event) => setParty(event.target.value);
-  //   const dateChangeHandler = (event) => setDate(event.target.value);
-  //   const timeChangeHandler = (event) => setTime(event.target.value);
-
-  //   const cancelClickHandler = () => history.goBack();
-
   async function submitClickHandler(event) {
     event.preventDefault();
     const abortController = new AbortController();
+
     const formattedDate = formatDate();
     const formattedTime = formatTime();
+
     const updatedReservation = {
       reservation_id,
       first_name: firstName,
@@ -64,10 +57,11 @@ export default function EditReservation() {
       reservation_time: formattedTime,
       people: Number(party),
     };
+
     try {
       await updateReservation(updatedReservation, abortController.signal);
     } catch (error) {
-      setErrorMessage(error.message);
+      setError(error);
       return;
     }
 
@@ -76,16 +70,14 @@ export default function EditReservation() {
   }
 
   function formatDateToMMDDYYY(originalDate) {
-    const date = originalDate.replace(/[\s-]/g, "")
+    const date = originalDate.replace(/[\s-]/g, "");
     return `${date.substring(4, 6)}${date.substring(6, 8)}${date.substring(0, 4)}`;
   }
 
   function formatDate() {
-    return `${date.substring(4, 8)}-${date.substring(0, 2)}-${date.substring(
-      2,
-      4
-    )}`;
+    return `${date.substring(4, 8)}-${date.substring(0, 2)}-${date.substring(2, 4)}`;
   }
+
   // reformat possible input that includes `pm`
   function formatTime() {
     let cleanTime = time.replace(/[\s:]/g, "").toLowerCase();
@@ -103,7 +95,6 @@ export default function EditReservation() {
         <h4>Complete all fields to edit a new reservation</h4>
       </div>
       <hr></hr>
-      {/* {errorMessage && <p className="alert alert-danger">{errorMessage}</p>} */}
       <ReservationForm
         submitClickHandler={submitClickHandler}
         setFirstName={setFirstName}
@@ -118,7 +109,7 @@ export default function EditReservation() {
         party={party}
         date={date}
         time={time}
-        errorMessage={errorMessage}
+        error={error}
       />
     </div>
   );

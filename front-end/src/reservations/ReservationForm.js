@@ -1,5 +1,6 @@
 // import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
+import ErrorAlert from "../layout/ErrorAlert";
 // import { createReservation, updateReservation } from "../utils/api";
 
 export default function ReservationForm({
@@ -16,25 +17,10 @@ export default function ReservationForm({
     party,
     date,
     time,
-    errorMessage
+    error
 }) {
     
   const history = useHistory();
-//   const { reservation_id } = useParams()
-//   const [firstName, setFirstName] = useState("");
-//   const [lastName, setLastName] = useState("");
-//   const [mobileNumber, setMobileNumber] = useState("");
-//   const [party, setParty] = useState();
-//   const [date, setDate] = useState("");
-//   const [time, setTime] = useState("");
-  //   const [firstName, setFirstName] = useState(first_name);
-  //   const [lastName, setLastName] = useState(last_name);
-  //   const [mobileNumber, setMobileNumber] = useState(mobile_number);
-  //   const [party, setParty] = useState(people);
-  //   const [date, setDate] = useState(reservation_date);
-  //   const [time, setTime] = useState(reservation_time);
-//   const [errorMessage, setErrorMessage] = useState("");
-//   console.log("firstName",firstName);
 
   const firstNameChangeHandler = (event) => setFirstName(event.target.value);
   const lastNameChangeHandler = (event) => setLastName(event.target.value);
@@ -46,54 +32,9 @@ export default function ReservationForm({
 
   const cancelClickHandler = () => history.goBack();
 
-//   async function submitClickHandler(event) {
-//     event.preventDefault();
-//     const abortController = new AbortController();
-//     const formattedDate = formatDate();
-//     const formattedTime = formatTime();
-//     const reservation = {
-//       first_name: firstName,
-//       last_name: lastName,
-//       mobile_number: mobileNumber,
-//       reservation_date: formattedDate,
-//       reservation_time: formattedTime,
-//       people: Number(party),
-//     };
-//     try {
-//       if (reservation_id) {
-//           const reservationId = Number(reservation_id)
-//         await updateReservation({ reservation_id: reservationId, ...reservation }, abortController.signal);
-//       } else {
-//         await createReservation(reservation, abortController.signal);
-//       }
-//     } catch (error) {
-//       setErrorMessage(error.message);
-//       return;
-//     }
-
-//     history.push(`/dashboard?date=${formattedDate}`);
-//     return () => abortController.abort();
-//   }
-
-//   function formatDate() {
-//     return `${date.substring(4, 8)}-${date.substring(0, 2)}-${date.substring(
-//       2,
-//       4
-//     )}`;
-//   }
-//   // reformat possible input that includes `pm`
-//   function formatTime() {
-//     let cleanTime = time.replace(/[\s:]/g, "").toLowerCase();
-//     if (cleanTime.includes("pm")) {
-//       cleanTime = Number(cleanTime.slice(0, 4)) + 1200;
-//       cleanTime = String(cleanTime);
-//     }
-//     return `${cleanTime.slice(0, 2)}:${cleanTime.slice(2, 4)}`;
-//   }
-
   return (
     <>
-      {errorMessage && <p className="alert alert-danger">{errorMessage}</p>}
+      {error && <ErrorAlert error={error} />}
       <form className="row g-3" onSubmit={submitClickHandler}>
         <div className="col-md-6 form-group">
           <label htmlFor="inputFirstName" className="form-label">

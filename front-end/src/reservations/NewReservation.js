@@ -11,7 +11,7 @@ export default function NewReservation() {
   const [party, setParty] = useState(0);
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [error, setError] = useState("");
 
   async function submitClickHandler(event) {
     event.preventDefault();
@@ -29,7 +29,7 @@ export default function NewReservation() {
     try {
       await createReservation(newReservation, abortController.signal);
     } catch (error) {
-      setErrorMessage(error.message);
+      setError(error);
       return;
     }
 
@@ -74,7 +74,7 @@ export default function NewReservation() {
         party={party}
         date={date}
         time={time}
-        errorMessage={errorMessage}
+        error={error}
         />
     </div>
   );

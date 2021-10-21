@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { readReservation, listTables, updateTable } from "../utils/api";
+import ErrorAlert from "../layout/ErrorAlert";
 
 export default function SeatReservation() {
   const { reservation_id } = useParams();
   const [reservation, setReservation] = useState({});
   const [tables, setTables] = useState([]);
   const [tableId, setTableId] = useState(0);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [error, setError] = useState("");
   const history = useHistory();
 
   useEffect(() => {
@@ -50,7 +51,7 @@ export default function SeatReservation() {
     try {
       await updateTable(updatedTable, abortController.signal);
     } catch (error) {
-      setErrorMessage(error.message);
+      setError(error);
       return;
     }
     history.push("/dashboard");
@@ -66,7 +67,7 @@ export default function SeatReservation() {
       <div className="d-md-flex mb-3">
         <h4>Assign a table to the reservation</h4>
       </div>
-      {errorMessage && <p className="alert alert-danger">{errorMessage}</p>}
+      {error && <ErrorAlert error={error} />}
       <hr></hr>
       <form className="row g-3" onSubmit={submitHandler}>
         <div className="col-md-6">
