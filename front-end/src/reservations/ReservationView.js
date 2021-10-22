@@ -14,44 +14,38 @@ export default function ReservationView({ reservation }) {
 
   return (
     <tr>
-      <th scope="row">{reservation_id}</th>
-      <td>
+      <th className="align-middle" scope="row">{reservation_id}</th>
+      <td className="align-middle">
         {first_name} {last_name}
       </td>
-      <td>{mobile_number}</td>
-      <td>{reservation_date}</td>
-      <td>{reservation_time}</td>
-      <td>{people}</td>
-      <td data-reservation-id-status={reservation.reservation_id}>{status}</td>
+      <td className="align-middle">{mobile_number}</td>
+      <td className="align-middle">{reservation_date}</td>
+      <td className="align-middle">{reservation_time}</td>
+      <td className="align-middle">{people}</td>
+      <td className="align-middle" data-reservation-id-status={reservation.reservation_id}>{status}</td>
 
       {/* shows the 'Edit', 'Seat' and 'Cancel' buttons ONLY if the reservation status is "booked" */}
       {status === "booked" ? (
         <>
           <td>
             <a
-              className="btn btn-primary"
+              className="btn btn-primary mx-1 mb-1"
               href={`/reservations/${reservation_id}/seat`}
             >
               Seat
             </a>
-          </td>
-          <td>
             <a
-              className="btn btn-secondary"
+              className="btn btn-secondary mx-1 mb-1"
               href={`/reservations/${reservation_id}/edit`}
             >
               Edit
             </a>
-          </td>
-          <td>
             {/* returns the 'Cancel' button */}
             <CancelReservation reservation={reservation} />
           </td>
         </>
       ) : (
         <>
-          <td></td>
-          <td></td>
           <td></td>
         </>
       )}

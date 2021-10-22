@@ -22,7 +22,7 @@ function Dashboard({ date }) {
   if (dateQuery) date = dateQuery;
 
   /**
-   * Get request of `reservations` with `date` query
+   * Get request of an array of `reservations` with `date` query
    */
   useEffect(() => {
     const abortController = new AbortController();

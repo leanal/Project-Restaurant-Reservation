@@ -6,7 +6,8 @@ export default function SearchReservation() {
   const [mobileNumber, setMobileNumber] = useState("");
   const [reservations, setReservations] = useState([]);
 
-  const mobileNumberChangeHandler = (event) => setMobileNumber(event.target.value);
+  const mobileNumberChangeHandler = (event) =>
+    setMobileNumber(event.target.value);
   async function findClickHandler(event) {
     event.preventDefault();
     const abortController = new AbortController();
@@ -45,14 +46,19 @@ export default function SearchReservation() {
           </button>
         </div>
       </form>
-      <div className="d-md-flex mb-3">
-        <h4 className="mb-0">
-          {reservations.length > 0
-            ? `Reservations for ${mobileNumber}`
-            : "(No reservations found.)"}
-        </h4>
-      </div>
-      <ReservationsList reservations={reservations} />
+
+      {reservations.length < 1 ? (
+        <div className="d-md-flex mb-3">
+          <h4 className="my-3">(No reservations found.)</h4>
+        </div>
+      ) : (
+        <>
+          <div className="d-md-flex mb-3">
+            <h4 className="my-3">{`Reservations for ${mobileNumber}`}</h4>
+          </div>
+          <ReservationsList reservations={reservations} />
+        </>
+      )}
     </div>
   );
 }

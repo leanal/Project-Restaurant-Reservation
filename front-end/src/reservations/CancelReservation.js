@@ -39,7 +39,7 @@ export default function CancelReservation({ reservation }) {
   return (
     <button
       type="button"
-      className="btn btn-secondary"
+      className="btn btn-secondary mx-1"
       data-reservation-id-cancel={reservation_id}
       onClick={() => cancelClickHandler()}
     >
