@@ -8,16 +8,11 @@ require('dotenv').config();
 const path = require("path");
 
 const {
-  DATABASE_URL = "postgres://juunlpgj:cT2DoDfJknYYcKQVHdi-_IGF6umskeij@kashin.db.elephantsql.com/juunlpgj",
-  DATABASE_URL_DEVELOPMENT = "postgres://emgawehe:3w9O43g-GsfbdK7g4kMxM_9Z21TMowDA@kashin.db.elephantsql.com/emgawehe",
-  DATABASE_URL_TEST = "postgres://xvoxbddq:u792bEhbP2SGyAXR6iggRoLlAJQAR6cj@kashin.db.elephantsql.com/xvoxbddq",
-  DATABASE_URL_PREVIEW = "postgres://ocjqglkm:3jsKfcdXiROB3DOcyzxBd1-q2u2GsIDI@kashin.db.elephantsql.com/ocjqglkm",
+  DATABASE_URL = "postgresql://postgres@localhost/postgres",
+  DATABASE_URL_DEVELOPMENT = "postgresql://postgres@localhost/postgres",
+  DATABASE_URL_TEST = "postgresql://postgres@localhost/postgres",
+  DATABASE_URL_PREVIEW = "postgresql://postgres@localhost/postgres",
   DEBUG,
-  // DATABASE_URL = "postgresql://postgres@localhost/postgres",
-  // DATABASE_URL_DEVELOPMENT = "postgresql://postgres@localhost/postgres",
-  // DATABASE_URL_TEST = "postgresql://postgres@localhost/postgres",
-  // DATABASE_URL_PREVIEW = "postgresql://postgres@localhost/postgres",
-  // DEBUG,
 } = process.env;
 
 module.exports = {
@@ -31,7 +26,7 @@ module.exports = {
     seeds: {
       directory: path.join(__dirname, "src", "db", "seeds"),
     },
-    // debug: !!DEBUG,
+    debug: !!DEBUG,
   },
   test: {
     client: "postgresql",
@@ -43,7 +38,7 @@ module.exports = {
     seeds: {
       directory: path.join(__dirname, "src", "db", "seeds"),
     },
-    // debug: !!DEBUG,
+    debug: !!DEBUG,
   },
   preview: {
     client: "postgresql",
@@ -55,7 +50,7 @@ module.exports = {
     seeds: {
       directory: path.join(__dirname, "src", "db", "seeds"),
     },
-    // debug: !!DEBUG,
+    debug: !!DEBUG,
   },
   production: {
     client: "postgresql",
@@ -67,6 +62,6 @@ module.exports = {
     seeds: {
       directory: path.join(__dirname, "src", "db", "seeds"),
     },
-    // debug: !!DEBUG,
+    debug: !!DEBUG,
   },
 };
