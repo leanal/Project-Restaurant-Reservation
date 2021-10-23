@@ -31,7 +31,7 @@ module.exports = {
     seeds: {
       directory: path.join(__dirname, "src", "db", "seeds"),
     },
-    debug: !!DEBUG,
+    // debug: !!DEBUG,
   },
   test: {
     client: "postgresql",
@@ -43,7 +43,7 @@ module.exports = {
     seeds: {
       directory: path.join(__dirname, "src", "db", "seeds"),
     },
-    debug: !!DEBUG,
+    // debug: !!DEBUG,
   },
   preview: {
     client: "postgresql",
@@ -55,7 +55,7 @@ module.exports = {
     seeds: {
       directory: path.join(__dirname, "src", "db", "seeds"),
     },
-    debug: !!DEBUG,
+    // debug: !!DEBUG,
   },
   production: {
     client: "postgresql",
@@ -67,6 +67,6 @@ module.exports = {
     seeds: {
       directory: path.join(__dirname, "src", "db", "seeds"),
     },
-    debug: !!DEBUG,
+    // debug: !!DEBUG,
   },
 };
