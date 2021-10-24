@@ -36,7 +36,7 @@ export default function ReservationForm({
     <>
       {error && <ErrorAlert error={error} />}
       <form className="row g-3" onSubmit={submitClickHandler}>
-        <div className="col-md-6 form-group">
+        <div className="col-md-6">
           <label htmlFor="inputFirstName" className="form-label">
             First Name
           </label>
@@ -124,8 +124,8 @@ export default function ReservationForm({
             onChange={timeChangeHandler}
           ></input>
         </div>
-        <div className="col-12">
-          <button type="submit" className="btn btn-primary">
+        <div className="col-12 my-4">
+          <button type="submit" className="btn btn-primary mr-2">
             Submit
           </button>
           <button
