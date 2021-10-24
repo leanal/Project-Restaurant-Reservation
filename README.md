@@ -1,12 +1,8 @@
 # Capstone: Restaurant Reservation System
 
-> You have been hired as a full stack developer at _Periodic Tables_, a startup that is creating a reservation system for fine dining restaurants.
-> The software is used only by restaurant personnel when a customer calls to request a reservation.
-> At this point, the customers will not access the system online.
+[Back-end Demo](https://leana-capstone-backend.herokuapp.com/)
 
-There are no user stories for deployment: it is expected that you will deploy the application to production after you finish a user story.
-
-There are no user stories for logging: it is expected that you will add logging to the application with enough detail to help you diagnose issues in production.
+[Front-end Demo](https://leana-capstone-frontend.herokuapp.com/)
 
 ## Existing files
 
