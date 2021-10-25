@@ -4,6 +4,7 @@ import useQuery from "../utils/useQuery";
 import ErrorAlert from "../layout/ErrorAlert";
 import ReservationsList from "../reservations/ReservationsList";
 import TablesList from "../tables/TablesList";
+import TodayPrevNextButtons from "./TodayPrevNextButtons";
 
 /**
  * Defines the dashboard page.
@@ -68,18 +69,17 @@ function Dashboard({ date }) {
 
   return (
     <main>
-      <h1>Dashboard</h1>
+      <h1 className="my-3">Dashboard</h1>
       <div className="d-md-flex mb-3">
         <h4 className="mb-0">
-          {reservations.length > 0
-            ? `Reservations for ${date}`
-            : "(No reservations for today.)"}
+          {reservations.length < 1 && "No "}
+          {`Reservations for`}&nbsp;
         </h4>
+        <h4 className="fw-bold">{date}</h4>
       </div>
       <ErrorAlert error={reservationsError} />
-      <ReservationsList
-        reservations={unfinishedReservations}
-      />
+      <TodayPrevNextButtons date={date} />
+      <ReservationsList reservations={unfinishedReservations} />
       <br></br>
       <hr></hr>
       <div className="d-md-flex mb-3">
