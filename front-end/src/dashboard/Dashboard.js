@@ -5,6 +5,7 @@ import ErrorAlert from "../layout/ErrorAlert";
 import ReservationsList from "../reservations/ReservationsList";
 import TablesList from "../tables/TablesList";
 import TodayPrevNextButtons from "./TodayPrevNextButtons";
+import BackAndForwardButtons from "../layout/BackAndForwardButtons";
 
 /**
  * Defines the dashboard page.
@@ -69,6 +70,7 @@ function Dashboard({ date }) {
 
   return (
     <main>
+      <BackAndForwardButtons />
       <h1 className="my-3">Dashboard</h1>
       <div className="d-md-flex mb-3">
         <h4 className="mb-0">
