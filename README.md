@@ -1,4 +1,4 @@
-# Capstone: Restaurant Reservation System
+# Restaurant Reservation System
 
 [Back-end Demo](https://leana-capstone-backend.herokuapp.com/)
 
